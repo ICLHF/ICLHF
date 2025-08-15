@@ -1,0 +1,164 @@
+env: {}
+
+render:
+  viewer_width: 1280
+  viewer_height: 720
+
+camera:
+  pos: [0.59532403, 0.4193147 , 1.55157923]
+  ori: [0.26229059, -0.25949866, -0.6536896, 0.66072233]
+
+scene:
+  type: InteractiveTraversableScene
+  scene_model: Rs_int
+
+robots:
+  - type: Fetch
+    position: [0.25, -0.43, 0.05]
+    orientation: [0, 0, 0, 1]
+    obs_modalities: [rgb]
+    scale: 1.0
+    self_collision: false
+    action_normalize: true
+    action_type: continuous
+    grasping_mode: sticky  # assisted
+    fixed_base: True
+    controller_config:
+      base:
+        name: DifferentialDriveController
+      arm_0:
+        name: JointController
+        motor_type: position
+
+objects:
+  - type: DatasetObject
+    name: apple_1
+    category: apple
+    model: qrqzvs
+    position: [1.71000004, 0.28999999, 0.83999997]
+    orientation: [0.73711246, 0.46027726, 0.4582077, 0.18669738]
+  - type: DatasetObject
+    name: bottle_of_orange_juice_2
+    category: bottle_of_orange_juice
+    model: rtqqor
+    position: [1.37, 0.25, 0.81999999]
+    orientation: [0, 0, 0, 1]
+  - type: DatasetObject
+    name: table_knife_3
+    category: table_knife
+    model: jxdfyy
+    position: [1.38999999, 0.05, 0.88]
+    orientation: [-0.00557432, 0.00213328, -0.13818157, 0.99038911]
+  - type: DatasetObject
+    name: fruitcake_4
+    category: fruitcake
+    model: kxckts
+    position: [1.63999999, 0.12, 0.82999998]
+    orientation: [0, 0, 0, 1]
+  - type: DatasetObject
+    name: box_of_tissues_5
+    category: box_of_tissues
+    model: ntbrtz
+    position: [1.19999981, 0.7399987 , 0.79609007]
+    orientation: [0, 0, 0, 0.99999994]
+  - type: DatasetObject
+    name: comic_book_6
+    category: comic_book
+    model: xmbxfm
+    position: [1.52495563, 0.6696294, 0.78801835]
+    orientation: [-0.00386894, 0.03766637, -0.05000919, 0.99803078]
+  - type: DatasetObject
+    name: notebook_7
+    category: notebook
+    model: xhigou
+    position: [1.27908432, 0.09889573, 0.78080667]
+    orientation: [0.01298547, 0.05275289, 0.33933923, -0.93909407]
+  - type: DatasetObject
+    name: pencil_8
+    category: pencil
+    model: zcapdd
+    position: [1.32712173, 0.65221477, 0.75944364]
+    orientation: [0.00000167, 0.00000386, 0.14598744, 0.98928636]
+  - type: DatasetObject
+    name: rubber_9
+    category: rubber_eraser
+    model: cungod
+    position: [1.17000008, 0.72000003, 1.05999994]
+    orientation: [0.93074292, -0.3653276, 0.01221475, -0.01022109]
+  - type: DatasetObject
+    name: paper_cup_10
+    category: paper_cup
+    model: guobeq
+    position: [1.15999949, 0.09999915, 0.80370647]
+    orientation: [0, 0, 0, 1]
+  - type: DatasetObject
+    name: pencil_box_11
+    category: pencil_box
+    model: taixcy
+    position: [1.18820477, 0.60984313, 0.78761834]
+    orientation: [0, 0, -0.954550147, -0.298050165]
+  - type: DatasetObject
+    name: paperback_book_12
+    category: paperback_book
+    model: hvllsq
+    position: [1.63, 0.12, 0.85999995]
+    orientation: [-0.1272551, 0.01096815, 0.00000023, 0.99180943]
+  - type: DatasetObject
+    name: pear_13
+    category: pear
+    model: clvnqe
+    position: [1.22000003, 0.33000001, 0.83999998]
+    orientation: [0.54605579, -0.29235482, -0.33768302, 0.70874679]
+  - type: DatasetObject
+    name: comic_book_14
+    category: comic_book
+    model: nekxsh
+    position: [1.5, 0.43000001, 0.83999997]
+    orientation: [0.00236284, 0.00066243, -0.05650169, 0.99839956]
+  - type: DatasetObject
+    name: plate_15
+    category: plate
+    model: fkpaie
+    position: [1.64999998, 0.72000003, 0.83999997]
+    orientation: [-0.02882968, -0.00463905,  0.02803514,  0.99918056]
+  - type: DatasetObject
+    name: tablefork_16
+    category: tablefork
+    model: hktwlm
+    position: [1.51999998, 0.55000001, 0.83999997]
+    orientation: [0.00583034, 0.00180891, 0.00003432, 0.99998146]
+  - type: DatasetObject
+    name: plate_17
+    category: plate
+    model: fkpaie
+    position: [1.24000001, 0.40000001, 0.82999999]
+    orientation: [0, 0, 0, 1]
+  - type: DatasetObject
+    name: pen_18
+    category: pen
+    model: nvyicz
+    position: [1.17000008, 0.2, 0.82999998]
+    orientation: [0.35173443, -0.60150295, -0.30128133, -0.65092766]
+
+supporters:
+  - type: DatasetObject
+    name: breakfast_table_skczfi_0
+
+actions:
+  - put_on: 2
+  - put_near: 2
+  - put_in: 2
+  - close: 1
+  - open: 1
+  - slice: 1
+  - throw: 1
+  - clean: 1
+  - fold: 1
+  - unfold: 1
+  - heat: 1
+  - freeze: 1
+
+workers:
+  master: config/worker/master.yml
+  llm_planner: config/worker/llm_planner.yml
+  pog_planner: config/worker/pog_planner.yml

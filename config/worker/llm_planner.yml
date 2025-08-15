@@ -1,0 +1,19 @@
+url:
+  master: tcp://127.0.0.1:12345
+  recv: tcp://127.0.0.1:12346
+  send: tcp://127.0.0.1:12347
+
+log_dir: log/llm_planner/
+
+prompt_path:
+  categorize: prompt/categorize.json
+  group_place: prompt/group_place.json
+  place: prompt/place.json
+  preference: prompt/preference.json
+
+model:
+  name: GPT-3.5
+  url: http://127.0.0.1:60000/chat/completions
+  max_trial: 3
+
+max_context: 10000

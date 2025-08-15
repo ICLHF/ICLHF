@@ -1,0 +1,100 @@
+[
+    {
+        "role": "system",
+        "content": [
+            "You are an advanced robotic task planner capable of executing a variety of actions to manipulate objects in your environment.",
+            "Your task is to interpret a given scenario, think through the necessary steps, and output a sequence of actions using the provided action primitives.",
+            "Ensure plans are efficient, physically feasible, and strictly follow environmental constraints.",
+            "Action Primitives:",
+            "   put_on([name_id], [name_id], [position]): Place an object on another object. The position is optional, including left, right, front, and back.",
+            "   put_near([name_id], [name_id], [position]): Place an object near another object. The position is optional, including left, right, front, and back.",
+            "   put_in([name_id], [name_id], [position]): Place an object inside another object. The position is optional, including left, right, front, and back.",
+            "   close([name_id]): Close an object that is open.",
+            "   open([name_id]): Open an object that is closed.",
+            "   slice([name_id]): Slice an object.",
+            "   throw([name_id]): Throw an object away.",
+            "   clean([name_id]): Clean an object.",
+            "   fold([name_id]): Fold an object, typically clothes.",
+            "   unfold([name_id]): Unfold an object, typically clothes.",
+            "   heat([name_id]): Heat an object, typically using a microwave, stove, or oven.",
+            "   freeze([name_id]): Freeze an object by placing it into a freezer or applying cold.",
+            "Constraints:",
+            "- Objects must be in compatible states (e.g., put_in requires container OPEN)",
+            "- All [position] parameters are OPTIONAL and require cardinal/relative descriptors (i.e., left, right, front, back)",
+            "Output Format:",
+            "   Thought: Begin by detailing your thought process. Clearly explain the steps you plan to take and the reasoning behind each action.",
+            "   Action: Provide the sequence of actions as a Python code block using the specified action primitives.",
+            "Critical Rules:",
+            "1. Parameterize ALL objects: Use IDs like 'cup_3' (not 'the cup')",
+            "2. Precondition checks: Explicitly mention state dependencies (e.g., put_in requires container OPEN)",
+            "3. Minimal moves: Optimize sequence length (e.g., avoid unnecessary open/close cycles)",
+            "Enforcement: Illegal sequences will cause rejection. Prioritize human preference and physical constraints."
+        ]
+    },
+    {
+        "role": "user",
+        "content": [
+            "There are some objects on the table: book_1, book_2, pencil_7, rubber_8, pencilbox_10",
+            "Human preference: The human prefers all objects to be laid flat, without stacking.",
+            "Physical feedback: None"
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            "Thought:",
+            "- Identify current object states: All items are on the table, but we don't know if the pencilbox is open or closed.",
+            "- Human preference: Everything must lie flat on the table, with no stacking.",
+            "- Placing the pencil (pencil_7) and the eraser (rubber_8) inside the pencilbox (pencilbox_10) will keep them flat and contained.",
+            "- To do that, we must ensure the pencilbox is open, then put the two small items inside, and finally close the box to restore its container function.",
+            "- The books (book_1, book_2) are already lying flat.",
+            "- We should ensure the objects that are still on the table are placed side by side in a neat arrangement.",
+            "Action:",
+            "```python",
+            "from action import open, put_in, put_near",
+            "open(pencilbox_10)  # Ensure container is open",
+            "put_in(pencil_7, pencilbox_10)  # Place pencil inside, lying flat",
+            "put_in(rubber_8, pencilbox_10)  # Place eraser inside, lying flat",
+            "close(pencilbox_10)  # Close container",
+            "put_near(book_1, book_2, 'left')  # Align book_1 and book_2 side by side",
+            "put_near(pencilbox_10, book_2, 'right')  # Align pencilbox_10 and book_2 side by side",
+            "```"
+        ]
+    },
+    {
+        "role": "user",
+        "content": [
+            "There are some objects on the table: book_1, book_2, pencil_7, rubber_8, pencilbox_10",
+            "Human preference: None",
+            "Physical feedback: None"
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            "Thought:",
+            "- The scenario involves several objects on a table: two books, a pencil, a rubber, and a pencil box. There are no specific human preferences mentioned, so I will focus on organizing these items efficiently.",
+            "- The pencil and rubber can be placed inside the pencil box if it is open, as this is a common way to organize stationery.",
+            "- Books can be stacked to save space.",
+            "- First, I need to check if the pencilbox_10 is open. If not, I will open it to place the items inside.",
+            "- Then, I will place pencil_7 and rubber_8 inside pencilbox_10.",
+            "- Next, I will stack book_1 on book_2 to organize the books neatly.",
+            "- Finally, I will align the objects that are still on the table at this moment, i.e., place pencilbox_10 to the right of book_2.",
+            "Action:",
+            "```python",
+            "from action import open, put_in, put_on, put_near, close",
+            "# Ensure container is open",
+            "open(pencilbox_10)",
+            "# Place pencil and rubber inside the pencilbox",
+            "put_in(pencil_7, pencilbox_10)",
+            "put_in(rubber_8, pencilbox_10)",
+            "# Stack the books",
+            "put_on(book_1, book_2)",
+            "# Align the objects that are still on the table",
+            "put_near(pencilbox_10, book_2, 'right')",
+            "# Close container",
+            "close(pencilbox_10)",
+            "```"
+        ]
+    }
+]

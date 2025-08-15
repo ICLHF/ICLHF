@@ -1,0 +1,6 @@
+url:
+  master: tcp://127.0.0.1:12345
+  recv: tcp://127.0.0.1:12347
+  send: tcp://127.0.0.1:12348
+
+log_dir: log/pog_planner/

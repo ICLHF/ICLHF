@@ -1,0 +1,110 @@
+# The robot description defines the generalized coordinates and how to map those
+# to the underlying URDF dofs.
+
+api_version: 1.0
+
+# Defines the generalized coordinates. Each generalized coordinate is assumed
+# to have an entry in the URDF.
+# Lula will only use these joints to control the robot position.
+cspace:
+    - torso_lift_joint
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - upperarm_roll_joint
+    - elbow_flex_joint
+    - forearm_roll_joint
+    - wrist_flex_joint
+    - wrist_roll_joint
+
+root_link: base_link
+subtree_root_link: base_link
+
+default_q: [
+    0.385,-0.9412,-0.6413,1.5519,1.6567,-0.9322,1.5342,2.1447
+]
+
+# Most dimensions of the cspace have a direct corresponding element
+# in the URDF. This list of rules defines how unspecified coordinates
+# should be extracted or how values in the URDF should be overwritten.
+
+cspace_to_urdf_rules:
+    - {name: l_wheel_joint, rule: fixed, value: 0.0}
+    - {name: r_wheel_joint, rule: fixed, value: 0.0}
+    - {name: head_pan_joint, rule: fixed, value: -0.0}
+    - {name: head_tilt_joint, rule: fixed, value: 0.0}
+    - {name: l_gripper_finger_joint, rule: fixed, value: 0.0}
+    - {name: r_gripper_finger_joint, rule: fixed, value: 0.0}
+
+active_task_spaces:
+    - base_link
+    - estop_link
+    - l_wheel_link
+    - laser_link
+    - r_wheel_link
+    - torso_fixed_link
+    - torso_lift_link
+    - head_pan_link
+    - head_tilt_link
+    - head_camera_link
+    - eyes
+    - head_camera_depth_frame
+    - head_camera_depth_optical_frame
+    - head_camera_rgb_frame
+    - head_camera_rgb_optical_frame
+    - shoulder_pan_link
+    - shoulder_lift_link
+    - upperarm_roll_link
+    - elbow_flex_link
+    - forearm_roll_link
+    - wrist_flex_link
+    - wrist_roll_link
+    - gripper_link
+    - l_gripper_finger_link
+    - r_gripper_finger_link
+
+composite_task_spaces: []
+
+# Lula uses collision spheres to define the robot geometry in order to avoid
+# collisions with external obstacles.  If no spheres are specified, Lula will
+# not be able to avoid obstacles.
+
+collision_spheres:
+  - base_link:
+    - "center": [0.0, 0.0, 0.194]
+      "radius": 0.1
+  - torso_fixed_link:
+    - "center": [-0.103, -0.0, 0.207]
+      "radius": 0.1
+  - torso_lift_link:
+    - "center": [-0.072, -0.0, 0.298]
+      "radius": 0.1
+  - head_pan_link:
+    - "center": [0.037, 0.0, 0.056]
+      "radius": 0.1
+  - head_tilt_link:
+    - "center": [0.072, 0.0, -0.269]
+      "radius": 0.1
+  - shoulder_pan_link:
+    - "center": [0.069, -0.039, 0.029]
+      "radius": 0.1
+  - shoulder_lift_link:
+    - "center": [0.105, 0.013, 0.0]
+      "radius": 0.1
+  - upperarm_roll_link:
+    - "center": [0.06, -0.015, 0.0]
+      "radius": 0.1
+  - elbow_flex_link:
+    - "center": [0.085, 0.008, 0.0]
+      "radius": 0.1
+  - forearm_roll_link:
+    - "center": [0.057, -0.024, 0.0]
+      "radius": 0.1
+  - wrist_flex_link:
+    - "center": [0.043, 0.002, 0.0]
+      "radius": 0.1
+  - wrist_roll_link:
+    - "center": [-0.01, -0.0, -0.0]
+      "radius": 0.1
+  - gripper_link:
+    - "center": [-0.094, 0.0, -0.0]
+      "radius": 0.1
