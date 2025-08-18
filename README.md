@@ -54,7 +54,7 @@ camera:
 
 scene:
   type: InteractiveTraversableScene
-  scene_model: Rs_int  # select a scene from https://behavior.stanford.edu/omnigibson/modules/scenes.html
+  scene_model: Rs_int  # select a scene from https://behavior.stanford.edu/omnigibson/scenes.html#types
 
 robots:
   - type: Fetch
