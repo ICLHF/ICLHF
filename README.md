@@ -115,7 +115,7 @@ workers:
 # 📄 Citation
 
 ```bibtex
-@misc{li2025iclhf,
+@article{li2025iclhf,
     title = {In-situ Value-aligned Human-Robot Interactions with Physical Constraints},
     author = {Hongtao Li and Ziyuan Jiao and Xiaofeng Liu and Hangxin Liu and Zilong Zheng},
     journal = {arXiv preprint arXiv:2508.07606},
