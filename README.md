@@ -23,8 +23,8 @@
 ![method](assets/method.png)
 
 # 💻 Quick Start
-1. Install [OmniGibson](https://behavior.stanford.edu/omnigibson/getting_started/installation.html)
-2. Install python packages according to `requirements.txt` (test on [OmniGibson Docker](https://github.com/StanfordVL/BEHAVIOR-1K/blob/main/OmniGibson/docker/run_docker.sh))
+1. Install [OmniGibson](https://behavior.stanford.edu/omnigibson/getting_started/installation.html) v1.1.1
+2. Install python packages according to `requirements.txt` (test on OmniGibson docker)
 3. Set up your LLMs:
    - Define the model parameters in the `config/worker/llm_planner.yml`
    - Start your local LLM API server according to the above config
