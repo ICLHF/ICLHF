@@ -22,7 +22,7 @@
 
 ![method](assets/method.png)
 
-# :computer: Quick Start
+# 💻 Quick Start
 1. Install [OmniGibson](https://behavior.stanford.edu/omnigibson/getting_started/installation.html)
 2. Install python packages according to `requirements.txt` (test on [OmniGibson Docker](https://github.com/StanfordVL/BEHAVIOR-1K/blob/main/OmniGibson/docker/run_docker.sh))
 3. Set up your LLMs:
@@ -30,7 +30,7 @@
    - Start your local LLM API server according to the above config
 4. Run `main.py`
 
-# :muscle: Extensions
+# 💪 Extensions
 ## Setup New Environments
 You can extend the `Env` class and implement the corresponding abstract methods. Then, replace `self.env` with your custom class in `Simulator`.
 
@@ -110,4 +110,15 @@ workers:
   master: config/worker/master.yml
   llm_planner: config/worker/llm_planner.yml
   pog_planner: config/worker/pog_planner.yml
+```
+
+# 📄 Citation
+
+```bibtex
+@misc{li2025iclhf,
+    title = {In-situ Value-aligned Human-Robot Interactions with Physical Constraints},
+    author = {Hongtao Li and Ziyuan Jiao and Xiaofeng Liu and Hangxin Liu and Zilong Zheng},
+    journal = {arXiv preprint arXiv:2508.07606},
+    year = {2025}
+}
 ```
