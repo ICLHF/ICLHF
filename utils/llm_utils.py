@@ -5,10 +5,13 @@ import requests
 
 def call_llm(
     model_name: str,
+    api_key: str,
     messages: list[dict],
     base_url: str,
 ) -> str:
-    response = requests.post(base_url, json={"model": model_name, "messages": messages})
+    response = requests.post(
+        base_url, json={"model": model_name, "api_key": api_key, "messages": messages}
+    )
     if response.status_code == 200:
         return response.json()
     else:
