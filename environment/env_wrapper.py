@@ -4,6 +4,7 @@ import omnigibson.lazy as lazy
 import torch as th
 from omnigibson import object_states
 from omnigibson.macros import gm
+from omnigibson.objects.dataset_object import DatasetObject
 from omnigibson.objects.primitive_object import PrimitiveObject
 from omnigibson.utils import sim_utils
 from omnigibson.utils.ui_utils import KeyboardEventHandler
@@ -46,7 +47,7 @@ class OmniGibsonEnv(Env):
         self._env.close()
         og.sim.close()  # type: ignore
 
-    def _get_object(self, name: str):
+    def _get_object(self, name: str) -> DatasetObject | PrimitiveObject:
         return self._env.scene.object_registry("name", name)
 
     def get_position(self, name: str) -> list[float]:
@@ -68,7 +69,9 @@ class OmniGibsonEnv(Env):
         )
 
     def get_bbox(self, name: str) -> list[float]:
-        return self._get_object(name).native_bbox.detach().cpu().tolist()
+        obj = self._get_object(name)
+        assert isinstance(obj, DatasetObject)
+        return obj.native_bbox.detach().cpu().tolist()
 
     def get_collisions(self, names: list[str]) -> list[tuple[str, str]]:
         res = []
@@ -90,11 +93,11 @@ class OmniGibsonEnv(Env):
         obj = self._get_object(name)
         match action_type:
             case ActionType.CLOSE:
-                if object_states.Open not in obj.states:
+                if not obj.states or object_states.Open not in obj.states:
                     return
                 obj.states[object_states.Open].set_value(False)
             case ActionType.OPEN:
-                if object_states.Open not in obj.states:
+                if not obj.states or object_states.Open not in obj.states:
                     return
                 obj.states[object_states.Open].set_value(True)
             case ActionType.SLICE:
@@ -121,6 +124,8 @@ class OmniGibsonEnv(Env):
                     position=pose_0[0], orientation=pose_0[1]
                 )
             case ActionType.THROW:
+                if not obj.states:
+                    return
                 recycling_bins = list(
                     filter(
                         lambda i: "recycling_bin" in i.category,
@@ -153,25 +158,25 @@ class OmniGibsonEnv(Env):
                 sink.states[object_states.ToggledOn].set_value(False)
                 obj.set_position_orientation(position=pose_0[0], orientation=pose_0[1])
             case ActionType.FOLD:
-                if object_states.Folded not in obj.states:
+                if not obj.states or object_states.Folded not in obj.states:
                     return
                 obj.states[object_states.Folded].set_value(True)
             case ActionType.UNFOLD:
-                if object_states.Unfolded not in obj.states:
+                if not obj.states or object_states.Unfolded not in obj.states:
                     return
                 obj.states[object_states.Unfolded].set_value(True)
             case ActionType.HEAT:
-                if object_states.Heated not in obj.states:
+                if not obj.states or object_states.Heated not in obj.states:
                     return
                 obj.states[object_states.Heated].set_value(True)
             case ActionType.FREEZE:
-                if object_states.Frozen not in obj.states:
+                if not obj.states or object_states.Frozen not in obj.states:
                     return
                 obj.states[object_states.Frozen].set_value(True)
             case _:
                 raise NotImplementedError(f"Not implement action type: {action_type}")
 
-    def voxelize(self):
+    def voxelize(self) -> None:
         self.pause()
         for cfg in self._env.objects_config:
             if cfg["type"] != "DatasetObject":

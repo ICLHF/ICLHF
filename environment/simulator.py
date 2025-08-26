@@ -205,11 +205,11 @@ class Simulator:
                     f"The {query['task']} is currently unsupported!"
                 )
 
-    def do_action(self, actions: dict[str, str]):
+    def do_action(self, actions: dict[str, str]) -> None:
         for name, action in actions.items():
             self.env.action(name, ActionType.from_str(action))
 
-    def do_place(self, placement: dict[str, list]):
+    def do_place(self, placement: dict[str, list]) -> None:
         self.env.pause()
         for name, trans in placement.items():
             trans = np.array(trans)

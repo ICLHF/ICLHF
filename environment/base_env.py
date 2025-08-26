@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -14,7 +16,7 @@ class ActionType(Enum):
     FREEZE = 8
 
     @classmethod
-    def from_str(cls, s: str):
+    def from_str(cls, s: str) -> ActionType:
         s = s.lower()
         for member in cls:
             if member.name.lower() == s:
