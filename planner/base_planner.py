@@ -54,11 +54,22 @@ class BasePlanner(Service):
         self.log_path = proj_dir().joinpath(
             config["log_dir"], datetime.now().strftime("%Y-%m-%d_%H-%M-%S.log")
         )
-        logging.basicConfig(
-            level=logging.INFO,
-            filename=self.log_path,
-            filemode="w",
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        self.logger = logging.getLogger(
+            f"{self.config['log_dir'][self.config['log_dir'].rfind('/') + 1 :]}_logger"
         )
+        self.logger.setLevel(logging.INFO)
+
+        file_handler = logging.FileHandler(str(self.log_path.resolve()), mode="w")
+        file_handler.setLevel(self.logger.level)
+        file_handler.setFormatter(
+            logging.Formatter(
+                fmt="%(asctime)s [%(levelname)s] <%(name)s>: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
+        )
+        self.logger.addHandler(file_handler)
 
     @abstractmethod
     def process(self, input: dict) -> dict:

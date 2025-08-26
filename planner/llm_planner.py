@@ -1,6 +1,5 @@
 import copy
 import json
-import logging
 from typing import Callable
 
 import networkx as nx
@@ -21,6 +20,7 @@ class LLMPlanner(BasePlanner):
         super().__init__(config)
 
         self.model_name: str = config["model"]["name"]
+        self.api_key: str = config["model"]["api_key"]
         self.base_url: str = config["model"]["url"]
         self.max_trial: int = config["model"]["max_trial"]
         self.max_context: int = config["max_context"]
@@ -44,7 +44,7 @@ class LLMPlanner(BasePlanner):
 
         self.groups: list[dict] = []
 
-        logging.info(
+        self.logger.info(
             "LLM Planner started at:\n"
             f"recv: {self.receiver.getsockopt(zmq.LAST_ENDPOINT)}\n"
             f"send: {self.sender.getsockopt(zmq.LAST_ENDPOINT)}"
@@ -61,7 +61,7 @@ class LLMPlanner(BasePlanner):
                 "content": "\n".join(i["content"] for i in self.preference_history),
             },
         ]
-        profile = call_llm(self.model_name, prompt, self.base_url)
+        profile = call_llm(self.model_name, self.api_key, prompt, self.base_url)
         return profile.strip()
 
     def infer_preference(self, user_content: str) -> str:
@@ -71,7 +71,9 @@ class LLMPlanner(BasePlanner):
         preference_prompt.append({"role": "user", "content": user_content})
 
         # Get llm guide
-        guide = call_llm(self.model_name, preference_prompt, self.base_url)
+        guide = call_llm(
+            self.model_name, self.api_key, preference_prompt, self.base_url
+        )
         if "Human preference:" in guide:
             guide = guide[guide.find("Human preference:") + len("Human preference:") :]
         return guide.strip()
@@ -106,17 +108,17 @@ class LLMPlanner(BasePlanner):
         self, prompt: list, post_fn: Callable[[str], tuple[str, str, list[dict]]]
     ) -> tuple[str, str, list[dict]]:
         for i in range(self.max_trial):
-            guide = call_llm(self.model_name, prompt, self.base_url)
+            guide = call_llm(self.model_name, self.api_key, prompt, self.base_url)
             try:
                 thought, action, res = post_fn(guide)
-                logging.info(
+                self.logger.info(
                     f"LLM thought:\n{thought}\n"
                     f"LLM action:\n{action}\n"
                     f"Parsed result:\n{res}"
                 )
                 return thought, action, res
             except Exception as e:
-                logging.warning(f"{i + 1}'s trail failed with {e}\nGuide:\n{guide}")
+                self.logger.warning(f"{i + 1}'s trail failed with {e}\nGuide:\n{guide}")
         return "", "", []
 
     def process(self, input: dict) -> dict:
@@ -135,7 +137,7 @@ class LLMPlanner(BasePlanner):
             len("".join(i["content"] for i in self.preference_history))
             > self.max_context
         ):
-            logging.info(f"[Introspection] Human profile: {self.infer_profile()}")
+            self.logger.info(f"[Introspection] Human profile: {self.infer_profile()}")
             self.preference_history = []
 
         # Format output
@@ -176,7 +178,7 @@ class LLMPlanner(BasePlanner):
                 preference=self.extract_preference(input["human_preference"], "place"),
             )
 
-    def modify_task(self, input) -> None:
+    def modify_task(self, input: dict) -> None:
         # ============================
         # Step 1: check categorization
         # ============================
@@ -278,10 +280,10 @@ class LLMPlanner(BasePlanner):
 
         left_objects = [i for i in all_objects if i not in intersect]
         if len(left_objects) != 0:
-            logging.warning(f"[Categorize] Left objects: {', '.join(left_objects)}")
+            self.logger.warning(f"[Categorize] Left objects: {', '.join(left_objects)}")
         nonexistent_objects = [i for i in parsed_objects if i not in intersect]
         if len(nonexistent_objects) != 0:
-            logging.warning(
+            self.logger.warning(
                 f"[Categorize] LLM generate nonexistent objects: {', '.join(nonexistent_objects)}"
             )
 
@@ -291,7 +293,7 @@ class LLMPlanner(BasePlanner):
                 i["objects"] = [j for j in i["objects"] if j not in nonexistent_objects]
         if len(left_objects) != 0:
             self.groups.append({"id": len(self.groups) + 1, "objects": left_objects})
-        logging.info(f"[Categorize] After preprocessed:\n{self.groups}")
+        self.logger.info(f"[Categorize] After preprocessed:\n{self.groups}")
 
         # Build initial scene graph
         objects_info = {
@@ -339,7 +341,7 @@ class LLMPlanner(BasePlanner):
         # Check output
         assert len(res) != 0, "[Group Place] LLM failed."
         if len(set(i["id"] for i in res)) != len(self.groups):
-            logging.warning(
+            self.logger.warning(
                 f"[Group Place] Parsed groups:\n{', '.join(str(i['id']) for i in res)}\ndo not cover all groups!"
             )
 
@@ -396,10 +398,10 @@ class LLMPlanner(BasePlanner):
 
         left_objects = [i for i in objects if i not in intersect]
         if len(left_objects) != 0:
-            logging.info(f"[Place] Left objects: {', '.join(left_objects)}")
+            self.logger.info(f"[Place] Left objects: {', '.join(left_objects)}")
         nonexistent_objects = [i for i in parsed_objects if i not in intersect]
         if len(nonexistent_objects) != 0:
-            logging.warning(
+            self.logger.warning(
                 f"[Place] LLM generate nonexistent objects: {', '.join(nonexistent_objects)}"
             )
 
@@ -422,7 +424,7 @@ class LLMPlanner(BasePlanner):
         for i in reversed(idx2remove):
             res.pop(i)
 
-        logging.info(f"[Place] After preprocessed:\n{res}")
+        self.logger.info(f"[Place] After preprocessed:\n{res}")
 
         # Refine scene graph
         my_graph = self.scene_graph.nodes[self.groups[group_idx]["id"]]["scene_graph"]

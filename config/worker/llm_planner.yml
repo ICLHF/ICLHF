@@ -3,7 +3,7 @@ url:
   recv: tcp://127.0.0.1:12346
   send: tcp://127.0.0.1:12347
 
-log_dir: log/llm_planner/
+log_dir: log/llm_planner
 
 prompt_path:
   categorize: prompt/categorize.json

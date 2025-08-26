@@ -23,7 +23,7 @@ class POGPlanner(BasePlanner):
     def __init__(self, config: dict) -> None:
         super().__init__(config)
 
-        logging.info(
+        self.logger.info(
             "POG Planner started at:\n"
             f"recv: {self.receiver.getsockopt(zmq.LAST_ENDPOINT)}\n"
             f"send: {self.sender.getsockopt(zmq.LAST_ENDPOINT)}"
@@ -32,7 +32,7 @@ class POGPlanner(BasePlanner):
         self.scene_graph: nx.DiGraph = nx.DiGraph()
 
     @classmethod
-    def init_scene(cls, g: nx.DiGraph, bounds: tuple):
+    def init_scene(cls, g: nx.DiGraph, bounds: tuple) -> tuple[dict, dict, int]:
         node_dict = {}
         edge_dict = {}
 
@@ -62,7 +62,7 @@ class POGPlanner(BasePlanner):
         return node_dict, edge_dict, cls.ROOT_ID
 
     @classmethod
-    def target_scene(cls, g: nx.DiGraph, bounds: tuple):
+    def target_scene(cls, g: nx.DiGraph, bounds: tuple) -> tuple[dict, dict, int]:
         node_dict = {}
         edge_dict = {}
 
@@ -132,7 +132,11 @@ class POGPlanner(BasePlanner):
 
     @classmethod
     def optimize(
-        cls, g: nx.DiGraph, bounds: tuple = (10, 10), need_plan: bool = False
+        cls,
+        g: nx.DiGraph,
+        bounds: tuple = (10, 10),
+        need_plan: bool = False,
+        logger: logging.Logger | None = None,
     ) -> tuple[Graph, bool, float]:
         g_start = Graph("start", fn=cls.init_scene, g=g, bounds=bounds)
         g_end = Graph("end", fn=cls.target_scene, g=g, bounds=bounds)
@@ -150,10 +154,13 @@ class POGPlanner(BasePlanner):
                 g_opt_goal = g_goal
         assert g_opt_goal is not None
 
-        if cnt_sat:
-            logging.info(f"Optimize {g.name}: OK\nTotal cost: {best_eval_total}")
-        else:
-            logging.warning(f"Optimize {g.name}: Failed\nTotal cost: {best_eval_total}")
+        if logger is not None:
+            if cnt_sat:
+                logger.info(f"Optimize {g.name}: OK\nTotal cost: {best_eval_total}")
+            else:
+                logger.warning(
+                    f"Optimize {g.name}: Failed\nTotal cost: {best_eval_total}"
+                )
 
         if not need_plan:
             return g_opt_goal, cnt_sat, best_eval_total
@@ -163,14 +170,16 @@ class POGPlanner(BasePlanner):
                 AStarSearcher,
                 problem=PlanningOnGraphProblem(g_start, g_opt_goal, parking_place=0),
             )
-            logging.info(f"Found path for {g.name}:\n{path}")
+            if logger is not None:
+                logger.info(f"Found path for {g.name}:\n{path}")
         except Exception as e:
-            logging.warning(f"Could not find path for {g.name}:\n{e}")
+            if logger is not None:
+                logger.warning(f"Could not find path for {g.name}:\n{e}")
 
         return g_opt_goal, cnt_sat, best_eval_total
 
     @classmethod
-    def extract_action(cls, g: nx.DiGraph) -> dict[str, str]:
+    def extract_action(cls, g: nx.DiGraph) -> dict:
         res = {}
         for n in g.nodes:
             if g.nodes[n]["action"] is None:
@@ -195,7 +204,9 @@ class POGPlanner(BasePlanner):
 
             # Optimize single group
             g_opt_goal, cnt_sat, cost = self.optimize(
-                my_graph, (supporter["bbox"][0], supporter["bbox"][1])
+                my_graph,
+                (supporter["bbox"][0], supporter["bbox"][1]),
+                logger=self.logger,
             )
             pog_info[id] = {"cnt_sat": cnt_sat, "cost": cost}
 
@@ -301,9 +312,9 @@ class POGPlanner(BasePlanner):
         assert group_graph_opt is not None
 
         if cnt_sat:
-            logging.info(f"Optimize group_graph: OK\nTotal cost: {best_eval_total}")
+            self.logger.info(f"Optimize group_graph: OK\nTotal cost: {best_eval_total}")
         else:
-            logging.warning(
+            self.logger.warning(
                 f"Optimize group_graph: Failed\nTotal cost: {best_eval_total}"
             )
 
