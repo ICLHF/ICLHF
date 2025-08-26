@@ -12,9 +12,9 @@ prompt_path:
   preference: prompt/preference.json
 
 model:
-  name: GPT-3.5
-  api_key: <API_KEY>
-  url: http://127.0.0.1:60000/chat/completions
+  name: GPT-3.5  # or GPT-3.5 Turbo used in the paper
+  api_key: <API_KEY>  # replace with your api key here
+  url: http://127.0.0.1:60000/chat/completions  # the url of your local LLM API server
   max_trial: 3
 
 max_context: 10000
