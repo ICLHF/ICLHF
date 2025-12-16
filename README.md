@@ -115,10 +115,12 @@ workers:
 # 📄 Citation
 
 ```bibtex
-@article{li2025iclhf,
-    title = {In-situ Value-aligned Human-Robot Interactions with Physical Constraints},
-    author = {Hongtao Li and Ziyuan Jiao and Xiaofeng Liu and Hangxin Liu and Zilong Zheng},
-    journal = {arXiv preprint arXiv:2508.07606},
-    year = {2025}
+@inproceedings{li2025iclhf,
+    author={Li, Hongtao and Jiao, Ziyuan and Liu, Xiaofeng and Liu, Hangxin and Zheng, Zilong},
+    booktitle={2025 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+    title={In-situ Value-aligned Human-Robot Interactions with Physical Constraints}, 
+    year={2025},
+    pages={9231--9238},
+    doi={10.1109/IROS60139.2025.11246572}
 }
 ```
